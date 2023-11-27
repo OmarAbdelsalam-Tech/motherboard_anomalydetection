@@ -40,7 +40,7 @@ if button:
 
     # Preprocess the image
     image = Image.open(file)
-    img_resized = image.resize((224, 224))
+    img_resized = image.resize((256, 256))
     img_array = np.array(img_resized)
     img_tensor = tf.convert_to_tensor(img_array)
     img_tensor = tf.expand_dims(img_tensor, axis=0)
