@@ -35,23 +35,26 @@ def save_response_content(response, destination):
             if chunk:
                 f.write(chunk)
 
-# Download the .h5 model file
+# Download and load models
 model_path = 'inception_feature_extractor.h5'
 model_file_id = '1_PrcaInABNl_7clMqae8KTxQFX5BGf-X'
-
-if not os.path.isfile(model_path):
-    st.write("Downloading TensorFlow model...")
-    download_model(model_file_id, model_path)
-    st.write("Download complete.")
-
-# Download the .pkl model file
 lof_model_path = 'lof_model.pkl'
 lof_model_file_id = '1YB1tJelTCqFtj2xlz5qd1n47Go2txBNG'
 
+# Check if the model files exist, if not, download them
+if not os.path.isfile(model_path):
+    download_model(model_file_id, model_path)
+
 if not os.path.isfile(lof_model_path):
-    st.write("Downloading LOF model...")
     download_model(lof_model_file_id, lof_model_path)
-    st.write("Download complete.")
+
+# Load the models
+try:
+    feature_model = load_model(model_path)
+    clf = joblib.load(lof_model_path)
+except Exception as e:
+    st.error(f"Error loading models: {e}")
+    st.stop()
 
 # Function to preprocess and extract features from an image
 def extract_features(img_data, model):
@@ -69,10 +72,6 @@ def detect_anomaly(new_image_data, model, clf):
     anomaly_score = clf.decision_function([new_image_features])[0]
     is_anomaly = anomaly_score < 0
     return "Anomaly Detected (Not a Motherboard)" if is_anomaly else "Motherboard Detected"
-
-# Load the models
-feature_model = load_model(model_path) if os.path.isfile(model_path) else None
-clf = joblib.load(lof_model_path) if os.path.isfile(lof_model_path) else None
 
 # Streamlit interface
 st.title("Motherboard Anomaly Detection")
