@@ -43,8 +43,8 @@ if button:
         my_bar.progress(percent_complete + 1)
 
     # Download and load the model
-    model_url = 'https://drive.google.com/uc?id=1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'
-    model_path = 'motherboard_model.h5'
+    model_url = 'https://drive.google.com/file/d/14xZkvuG9STCRzQRgPRRrqb7QFlZBRAv3'
+    model_path = 'my_model.h5'
     if not os.path.isfile(model_path):
         download_model(model_url, model_path)
     
