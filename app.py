@@ -42,7 +42,7 @@ def save_response_content(response, destination):
 
 # Download the model
 model_path = 'my_model.h5'
-model_file_id = '1V1o9RDLyIui1yOhtgX9lIOGcSrVp2sI-'  # Your Google Drive file ID
+model_file_id = '1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Your Google Drive file ID
 if not os.path.isfile(model_path):
     download_model(model_file_id, model_path)
 
