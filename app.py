@@ -50,6 +50,7 @@ if button:
         download_model(model_url, model_path)
     
     try:
+        import tensorflow as tf
         model = tf.keras.models.load_model('model.keras', compile=False)
         image_data = preprocess_image(file)
         prediction = model.predict(image_data)
