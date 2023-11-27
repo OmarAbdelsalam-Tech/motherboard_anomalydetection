@@ -6,7 +6,6 @@ from PIL import Image
 import io
 import requests
 import os
-import time
 
 # Function to download the model file from Google Drive
 def download_model(file_id, destination):
@@ -58,7 +57,7 @@ if uploaded_file is not None:
         with st.spinner('Loading model and classifying...'):
             # Download the model
             model_path = 'my_model.h5'
-            model_file_id = '1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Replace with your Google Drive file ID
+            model_file_id = '1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Your Google Drive file ID
             if not os.path.isfile(model_path):
                 download_model(model_file_id, model_path)
 
