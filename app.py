@@ -1,58 +1,49 @@
 import streamlit as st
 import numpy as np
-import time
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.models import load_model
+import pandas as pd
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+from keras.models import load_model
+import os
 from PIL import Image
 import requests
-import os
+import base64
 
-st.title("Motherboard Classification App")
-st.subheader("Contributions: [Your Name]")
-st.subheader("Please upload an image of the motherboard!")
+st.title("Motherboard Classifier")
+st.subheader("Developed by [Your Name]")
+st.subheader("Upload an image to determine if it's a motherboard.")
 
-# Function to download the model file
-def download_model(url, destination):
-    response = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(response.content)
+# File uploader
+file = st.file_uploader("Upload your image here:", type=["jpg", "jpeg", "png"])
 
-# Function to preprocess the image
-def preprocess_image(uploaded_file):
-    img = Image.open(uploaded_file)
-    img = img.resize((224, 224))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array /= 255.0
-    return img_array
-
-# Streamlit UI for uploading an image
-st.subheader("Upload your motherboard image here:")
-file = st.file_uploader(" ", type=["jpg", "jpeg", "png"])
 if file:
     st.image(file, caption='Uploaded Image')
 
-# Button to classify the image
+# Button to classify image
 button = st.button('Classify Image')
-if button:
-    # Show progress text and progress bar
-    progress_text = "Analyzing the image with our deep learning model..."
-    my_bar = st.progress(0)
-    for percent_complete in range(100):
-        time.sleep(0.02)
-        my_bar.progress(percent_complete + 1)
 
-    # Download and load the model
-    model_url = 'https://drive.google.com/uc?id=1k0McXeXNYT-rvDt1wmPcDpP4f_HR1Kps'
-    model_path = 'Pizza_Model.h5'
-    if not os.path.isfile(model_path):
-        download_model(model_url, model_path)
-    
-    try:
-        model = load_model(model_path)
-        image_data = preprocess_image(file)
-        prediction = model.predict(image_data)
-        class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
-        st.subheader(f'Prediction: {class_label}')
-    except Exception as e:
-        st.error(f"Error in model prediction: {e}")
+if button:
+    # Download model from Google Drive
+    url = 'https://drive.google.com/uc?id=YOUR_MODEL_FILE_ID'
+    response = requests.get(url)
+    with open('motherboard_model.h5', 'wb') as f:
+        f.write(response.content)
+
+    # Load the model
+    model = load_model('motherboard_model.h5')
+
+    # Preprocess the image
+    image = Image.open(file)
+    img_resized = image.resize((224, 224))
+    img_array = np.array(img_resized)
+    img_tensor = tf.convert_to_tensor(img_array)
+    img_tensor = tf.expand_dims(img_tensor, axis=0)
+    img_tensor = tf.cast(img_tensor, tf.float32) / 255.0
+
+    # Predict the class
+    prediction = model.predict(img_tensor)
+
+    # Display result
+    result_text = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
+    st.subheader(f"Prediction: {result_text}")
