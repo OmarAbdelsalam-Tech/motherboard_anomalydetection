@@ -51,7 +51,7 @@ if button:
     
     try:
         import tensorflow as tf
-        model = tf.keras.models.load_model('model.keras', compile=False)
+        model = tf.keras.models.load_model('my_model.keras', compile=False)
         image_data = preprocess_image(file)
         prediction = model.predict(image_data)
         class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
