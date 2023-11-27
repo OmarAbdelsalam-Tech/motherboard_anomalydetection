@@ -43,7 +43,7 @@ if button:
         my_bar.progress(percent_complete + 1)
 
     # Download and load the model
-    model_url = 'https://drive.google.com/file/d/1Ks_cTuDqNBqNya614tTQgwl87Mqj6gZX'
+    model_url = 'https://drive.google.com/file/d/1Ks_cTuDqNBqNya614tTQgwl87Mqj6gZX/view?usp=sharing'
     model_path = 'my_model.keras'
     if not os.path.isfile(model_path):
         download_model(model_url, model_path)
