@@ -25,13 +25,13 @@ button = st.button('Classify Image')
 
 if button:
     # Download model from Google Drive
-    url = 'https://drive.google.com/uc?id=YOUR_MODEL_FILE_ID'
+    url = 'https://drive.google.com/uc?id=1k0McXeXNYT-rvDt1wmPcDpP4f_HR1Kps'
     response = requests.get(url)
-    with open('motherboard_model.h5', 'wb') as f:
+    with open('Pizza_Model.h5', 'wb') as f:
         f.write(response.content)
 
     # Load the model
-    model = load_model('motherboard_model.h5')
+    model = load_model('Pizza_Model.h5')
 
     # Preprocess the image
     image = Image.open(file)
