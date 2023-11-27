@@ -4,14 +4,8 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from PIL import Image
 import io
-import streamlit as st
 import requests
 import os
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-from PIL import Image
-import numpy as np
-import io
 
 # Function to download the model file from Google Drive
 def download_model(file_id, destination):
@@ -34,7 +28,6 @@ def get_confirm_token(response):
 
 def save_response_content(response, destination):
     CHUNK_SIZE = 32768
-
     with open(destination, "wb") as f:
         for chunk in response.iter_content(CHUNK_SIZE):
             if chunk:  # filter out keep-alive new chunks
@@ -42,19 +35,12 @@ def save_response_content(response, destination):
 
 # Download the model
 model_path = 'my_model.h5'
-model_file_id = '1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Your Google Drive file ID
+model_file_id = '1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Replace with your Google Drive file ID
 if not os.path.isfile(model_path):
     download_model(model_file_id, model_path)
 
 # Load the model
 model = load_model(model_path)
-
-# The rest of your Streamlit app code...
-# ...
-
-
-# Load the trained model
-model = load_model('model.h5')
 
 # Function to preprocess the image
 def preprocess_image(uploaded_file):
