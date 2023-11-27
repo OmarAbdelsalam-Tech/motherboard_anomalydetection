@@ -14,11 +14,6 @@ st.title("Motherboard Classifier")
 st.subheader("Developed by [Your Name]")
 st.subheader("Upload an image to determine if it's a motherboard.")
 
-import base64
-
-
-
-
 # File uploader
 file = st.file_uploader("Upload your motherboard image here:", type=["jpg", "jpeg", "png"])
 
@@ -29,9 +24,9 @@ if file:
 button = st.button('Classify Image')
 
 if button:
-    # Download model from Google Drive
-    url = 'https://drive.google.com/file/d/1kPMHyr8LXxY_Al6WHjG5JCYrsbCrHvEw'
-    response = requests.get(url)
+    # Direct download link for the Google Drive file
+    direct_url = 'https://drive.google.com/uc?id=1kPMHyr8LXxY_Al6WHjG5JCYrsbCrHvEw'
+    response = requests.get(direct_url)
     with open('my_model.h5', 'wb') as f:
         f.write(response.content)
 
