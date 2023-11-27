@@ -14,8 +14,13 @@ st.title("Motherboard Classifier")
 st.subheader("Developed by [Your Name]")
 st.subheader("Upload an image to determine if it's a motherboard.")
 
+import base64
+
+
+
+
 # File uploader
-file = st.file_uploader("Upload your image here:", type=["jpg", "jpeg", "png"])
+file = st.file_uploader("Upload your motherboard image here:", type=["jpg", "jpeg", "png"])
 
 if file:
     st.image(file, caption='Uploaded Image')
