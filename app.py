@@ -1,15 +1,16 @@
 import streamlit as st
 import numpy as np
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-import tensorflow as tf
-
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from PIL import Image
 import requests
+import os
 
-# Function to download the model file from Google Drive
+st.title("Motherboard Classification App")
+st.subheader("Contributions: [Your Name]")
+st.subheader("Please upload an image of the motherboard!")
+
+# Function to download the model file
 def download_model(url, destination):
     response = requests.get(url)
     with open(destination, 'wb') as f:
@@ -24,27 +25,33 @@ def preprocess_image(uploaded_file):
     img_array /= 255.0
     return img_array
 
-# Streamlit UI setup
-st.title("Motherboard Classification")
-st.write("Upload an image to classify if it's a motherboard or not.")
+# Streamlit UI for uploading an image
+st.subheader("Upload your motherboard image here:")
+file = st.file_uploader(" ", type=["jpg", "jpeg", "png"])
+if file:
+    st.image(file, caption='Uploaded Image')
 
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+# Button to classify the image
+button = st.button('Classify Image')
+if button:
+    # Show progress text and progress bar
+    progress_text = "Analyzing the image with our deep learning model..."
+    my_bar = st.progress(0)
+    for percent_complete in range(100):
+        time.sleep(0.02)
+        my_bar.progress(percent_complete + 1)
 
-if uploaded_file is not None:
-    st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
+    # Download and load the model
+    model_url = 'https://drive.google.com/uc?id=1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'
+    model_path = 'motherboard_model.h5'
+    if not os.path.isfile(model_path):
+        download_model(model_url, model_path)
     
-    if st.button('Classify'):
-        with st.spinner('Loading model and classifying...'):
-            model_path = 'my_model.h5'
-            model_url = 'https://drive.google.com/uc?id=1BLWDHXoA_mwbVKiMIAGcUapdCo47UwNU'  # Your Google Drive file URL
-            if not os.path.isfile(model_path):
-                download_model(model_url, model_path)
-
-            try:
-                model = load_model(model_path)
-                image_data = preprocess_image(uploaded_file)
-                prediction = model.predict(image_data)
-                class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
-                st.success(f"Prediction: {class_label}")
-            except Exception as e:
-                st.error(f"Error loading model: {e}")
+    try:
+        model = load_model(model_path)
+        image_data = preprocess_image(file)
+        prediction = model.predict(image_data)
+        class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
+        st.subheader(f'Prediction: {class_label}')
+    except Exception as e:
+        st.error(f"Error in model prediction: {e}")
