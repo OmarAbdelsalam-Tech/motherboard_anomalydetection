@@ -44,14 +44,14 @@ if button:
         my_bar.progress(percent_complete + 1)
 
     # Download and load the model
-    model_url = 'https://drive.google.com/file/d/1Ks_cTuDqNBqNya614tTQgwl87Mqj6gZX/view?usp=sharing'
-    model_path = 'my_model.keras'
+    model_url = 'https://drive.google.com/file/d/1w3S7MeK7GkicfkULCCrD0gMfFmN-8DM0/view?usp=sharing'
+    model_path = 'my_model.h5'
     if not os.path.isfile(model_path):
         download_model(model_url, model_path)
     
     try:
         import tensorflow as tf
-        model = tf.keras.models.load_model('my_model.keras', compile=False)
+        model = tf.keras.models.load_model('my_model.h5', compile=False)
         image_data = preprocess_image(file)
         prediction = model.predict(image_data)
         class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
