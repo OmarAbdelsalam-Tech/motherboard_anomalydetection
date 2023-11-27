@@ -1,7 +1,7 @@
-
 streamlit
 numpy
 tensorflow
 Pillow
 requests
 joblib
+scikit-learn
