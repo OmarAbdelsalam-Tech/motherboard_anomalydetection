@@ -1,15 +1,19 @@
 import streamlit as st
-import requests
-import os
 import numpy as np
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.inception_v3 import preprocess_input
 from tensorflow.keras.models import load_model
-import joblib
 from PIL import Image
 import io
+import streamlit as st
+import requests
+import os
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from PIL import Image
+import numpy as np
+import io
 
-# Function to download a model file from Google Drive
+# Function to download the model file from Google Drive
 def download_model(file_id, destination):
     URL = f"https://drive.google.com/uc?id={file_id}"
     session = requests.Session()
@@ -30,58 +34,47 @@ def get_confirm_token(response):
 
 def save_response_content(response, destination):
     CHUNK_SIZE = 32768
+
     with open(destination, "wb") as f:
         for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:
+            if chunk:  # filter out keep-alive new chunks
                 f.write(chunk)
 
-# Download and load models
-model_path = 'inception_feature_extractor.h5'
-model_file_id = '1_PrcaInABNl_7clMqae8KTxQFX5BGf-X'
-lof_model_path = 'lof_model.pkl'
-lof_model_file_id = '1YB1tJelTCqFtj2xlz5qd1n47Go2txBNG'
-
-# Check if the model files exist, if not, download them
+# Download the model
+model_path = 'my_model.h5'
+model_file_id = '1V1o9RDLyIui1yOhtgX9lIOGcSrVp2sI-'  # Your Google Drive file ID
 if not os.path.isfile(model_path):
     download_model(model_file_id, model_path)
 
-if not os.path.isfile(lof_model_path):
-    download_model(lof_model_file_id, lof_model_path)
+# Load the model
+model = load_model(model_path)
 
-# Load the models
-try:
-    feature_model = load_model(model_path)
-    clf = joblib.load(lof_model_path)
-except Exception as e:
-    st.error(f"Error loading models: {e}")
-    st.stop()
+# The rest of your Streamlit app code...
+# ...
 
-# Function to preprocess and extract features from an image
-def extract_features(img_data, model):
-    img = Image.open(io.BytesIO(img_data))
-    img = img.resize((299, 299))
+
+# Load the trained model
+model = load_model('model.h5')
+
+# Function to preprocess the image
+def preprocess_image(uploaded_file):
+    img = Image.open(uploaded_file)
+    img = img.resize((224, 224))
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    img_array = preprocess_input(img_array)
-    features = model.predict(img_array)
-    return features.flatten()
+    img_array /= 255.0
+    return img_array
 
-# Function to detect anomalies
-def detect_anomaly(new_image_data, model, clf):
-    new_image_features = extract_features(new_image_data, model)
-    anomaly_score = clf.decision_function([new_image_features])[0]
-    is_anomaly = anomaly_score < 0
-    return "Anomaly Detected (Not a Motherboard)" if is_anomaly else "Motherboard Detected"
-
-# Streamlit interface
-st.title("Motherboard Anomaly Detection")
+# Streamlit UI
+st.title("Motherboard Classification")
+st.write("Upload an image to classify if it's a motherboard or not.")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 if uploaded_file is not None:
-    # Display the uploaded image
-    st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
+    image_data = preprocess_image(uploaded_file)
+    st.image(image_data, caption='Uploaded Image', use_column_width=True)
     
-    # Detect anomaly
-    if st.button('Detect Anomaly'):
-        result = detect_anomaly(uploaded_file.read(), feature_model, clf)
-        st.write(result)
+    if st.button('Classify'):
+        prediction = model.predict(image_data)
+        class_label = "Motherboard" if prediction[0][0] > 0.5 else "Not a Motherboard"
+        st.write(f"Prediction: {class_label}")
