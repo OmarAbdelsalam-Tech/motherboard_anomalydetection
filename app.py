@@ -1,10 +1,13 @@
 import streamlit as st
 import numpy as np
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
+
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from PIL import Image
 import requests
-import os
 
 # Function to download the model file from Google Drive
 def download_model(url, destination):
