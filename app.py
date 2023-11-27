@@ -5,6 +5,7 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import requests
 import os
+import time
 
 st.title("Motherboard Classification App")
 st.subheader("Contributions: [Your Name]")
