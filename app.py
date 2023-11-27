@@ -30,7 +30,7 @@ button = st.button('Classify Image')
 
 if button:
     # Download model from Google Drive
-    url = 'https://drive.google.com/file/d/1w3S7MeK7GkicfkULCCrD0gMfFmN-8DM0'
+    url = 'https://drive.google.com/file/d/1kPMHyr8LXxY_Al6WHjG5JCYrsbCrHvEw'
     response = requests.get(url)
     with open('my_model.h5', 'wb') as f:
         f.write(response.content)
